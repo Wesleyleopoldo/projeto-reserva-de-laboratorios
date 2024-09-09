@@ -1,4 +1,4 @@
-package com.gov.pe.projeto.labreservas.room;
+package com.gov.pe.projeto.labreservas.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
