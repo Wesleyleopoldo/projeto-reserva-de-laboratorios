@@ -1,0 +1,55 @@
+package com.labssyntech.labsSyntech.models;
+
+import jakarta.persistence.*;
+
+import java.time.LocalTime;
+
+@Entity
+@Table(name = "available_hours")
+public class AvailableHours {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "available_hours_id", nullable = false)
+    private Long availableHours;
+
+    @Column(name = "hours", nullable = false)
+    private LocalTime hours;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_days_in_the_week", referencedColumnName = "days_in_the_week_id", nullable = false)
+    private DaysInTheWeek daysInTheWeek;
+
+    public AvailableHours() {
+    }
+
+    public AvailableHours(Long availableHours, LocalTime hours, DaysInTheWeek daysInTheWeek) {
+        this.availableHours = availableHours;
+        this.hours = hours;
+        this.daysInTheWeek = daysInTheWeek;
+    }
+
+    public DaysInTheWeek getDaysInTheWeek() {
+        return daysInTheWeek;
+    }
+
+    public void setDaysInTheWeek(DaysInTheWeek daysInTheWeek) {
+        this.daysInTheWeek = daysInTheWeek;
+    }
+
+    public LocalTime getHours() {
+        return hours;
+    }
+
+    public void setHours(LocalTime hours) {
+        this.hours = hours;
+    }
+
+    public Long getAvailableHours() {
+        return availableHours;
+    }
+
+    public void setAvailableHours(Long availableHours) {
+        this.availableHours = availableHours;
+    }
+}
