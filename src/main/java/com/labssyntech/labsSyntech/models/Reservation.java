@@ -1,7 +1,6 @@
 package com.labssyntech.labsSyntech.models;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -31,8 +30,7 @@ public class Reservation {
     @JoinColumn(name = "fk_avaulable_hours", referencedColumnName = "available_hours_id", nullable = false)
     private AvailableHours hoursId;
 
-    @CreationTimestamp
-    @Column(name = "date_reservation", nullable = false, updatable = false)
+    @Column(name = "date_reservation", nullable = false)
     private LocalDateTime dateTheReservation;
 
     public Reservation() {

@@ -15,11 +15,16 @@ public class DaysInTheWeek {
     @Enumerated(EnumType.STRING)
     private DaysInTheWeekEnum daysInTheWeekEnum;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "fk_organization_id", referencedColumnName = "organization_id", nullable = true)
     private Organization organization;
 
     public DaysInTheWeek() {
+    }
+
+    public DaysInTheWeek(DaysInTheWeekEnum daysInTheWeekEnum, Organization organization){
+        this.daysInTheWeekEnum = daysInTheWeekEnum;
+        this.organization = organization;
     }
 
     public DaysInTheWeek(Long daysInWeekId, DaysInTheWeekEnum daysInTheWeekEnum, Organization organization) {
