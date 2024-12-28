@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.labssyntech.labsSyntech.dtos.DaysInWeekDTO;
+import com.labssyntech.labsSyntech.dtos.DaysInWeekDTOSet;
 import com.labssyntech.labsSyntech.models.DaysInTheWeek;
 import com.labssyntech.labsSyntech.models.Organization;
 import com.labssyntech.labsSyntech.repository.DaysInWeekRepository;
@@ -23,19 +24,34 @@ public class DaysInWeekService {
     private OrganizationRepository organizationRepository;
 
     public List<DaysInWeekDTO> createDaysInWeek(List<DaysInTheWeekEnum> daysInWeek, UUID organizationId) {
-        List<DaysInTheWeek> daysInWeekList;
 
-        Optional<Organization> organizationOptional = organizationRepository.findById(organizationId);
-        Organization organization = new Organization(organizationOptional.get().getOrganizationId(), organizationOptional.get().getOrganizationName());
+        Optional<List<DaysInTheWeek>> organizationUuid = daysInWeekRepository.findByOrganization_OrganizationId(organizationId);
 
-        daysInWeekList = daysInWeek.stream().map(dayInWeek -> new DaysInTheWeek(dayInWeek, organization)).toList();
+        if(organizationUuid.isPresent()){
+            throw new IllegalStateException("Cronograma já criado!!!");
+        } else {
+            List<DaysInTheWeek> daysInWeekList;
 
-        for (DaysInTheWeek daysInTheWeek : daysInWeekList) {
-           daysInWeekRepository.save(daysInTheWeek);
+            Optional<Organization> organizationOptional = organizationRepository.findById(organizationId);
+            Organization organization = new Organization(organizationOptional.get().getOrganizationId(), organizationOptional.get().getOrganizationName());
+
+            daysInWeekList = daysInWeek.stream().map(dayInWeek -> new DaysInTheWeek(dayInWeek, organization)).toList();
+
+            for (DaysInTheWeek daysInTheWeek : daysInWeekList) {
+            daysInWeekRepository.save(daysInTheWeek);
+            }
+
+            List<DaysInWeekDTO> daysInWeekDTOs = daysInWeekList.stream().map(day -> new DaysInWeekDTO(day.getDaysInWeekId(), day.getDaysInTheWeekEnum(), organization.getOrganizationId())).toList();
+        
+            return daysInWeekDTOs;
         }
+    }
 
-        List<DaysInWeekDTO> daysInWeekDTOs = daysInWeekList.stream().map(day -> new DaysInWeekDTO(day.getDaysInWeekId(), day.getDaysInTheWeekEnum(), organization.getOrganizationId())).toList();
-    
+    public List<DaysInWeekDTOSet> getAllInWeekServices() {
+        List<DaysInTheWeek> daysInTheWeeksList = daysInWeekRepository.findAll();
+
+        List<DaysInWeekDTOSet> daysInWeekDTOs = daysInTheWeeksList.stream().map(daysData -> new DaysInWeekDTOSet(daysData.getDaysInWeekId(), daysData.getDaysInTheWeekEnum(), daysData.getOrganization())).toList();
+
         return daysInWeekDTOs;
     }
 }
