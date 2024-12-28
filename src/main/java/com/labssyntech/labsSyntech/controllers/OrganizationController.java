@@ -20,8 +20,9 @@ public class OrganizationController {
     @Autowired
     private OrganizationService organizationService;
 
+    // Endpoint que lista as organizações...
     @GetMapping("/administerW")
-    public ResponseEntity getAllOrganizations(){
+    public ResponseEntity<List<OrganizationDTO>> getAllOrganizations(){
 
         List<OrganizationDTO> organizations = organizationService.getAllOrganizationService();
 
@@ -31,7 +32,7 @@ public class OrganizationController {
         return ResponseEntity.noContent().build();
 
     }
-
+    // Endpoint que cria organização...
     @PostMapping("/registerorganization")
     public ResponseEntity<OrganizationDTO> createOrganization(@RequestBody OrganizationRequestBody newOrganizationData){
         OrganizationDTO newOrganization = organizationService.createOrganization(newOrganizationData.name());
