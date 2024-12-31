@@ -5,10 +5,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.labssyntech.labsSyntech.dtos.DaysInWeekDTO;
-import com.labssyntech.labsSyntech.dtos.DaysInWeekDTOSet;
+import com.labssyntech.labsSyntech.dto.DaysInWeekDTO;
+import com.labssyntech.labsSyntech.dto.DaysInWeekDTOSet;
+import com.labssyntech.labsSyntech.exception.InternalErrorException;
+import com.labssyntech.labsSyntech.exception.NotFoundException;
+import com.labssyntech.labsSyntech.exception.ResourceAlredyExistsException;
 import com.labssyntech.labsSyntech.models.DaysInTheWeek;
 import com.labssyntech.labsSyntech.models.Organization;
 import com.labssyntech.labsSyntech.repository.DaysInWeekRepository;
@@ -25,11 +29,21 @@ public class DaysInWeekService {
 
     public List<DaysInWeekDTO> createDaysInWeek(List<DaysInTheWeekEnum> daysInWeek, UUID organizationId) {
 
-        Optional<List<DaysInTheWeek>> organizationUuid = daysInWeekRepository.findByOrganization_OrganizationId(organizationId);
+        Optional<Organization> organizationCreated = organizationRepository.findById(organizationId);
 
-        if(organizationUuid.isPresent()){
-            throw new IllegalStateException("Cronograma já criado!!!");
-        } else {
+        Organization organizationClass = new Organization(
+            organizationCreated
+            .get()
+            .getOrganizationId(), 
+            organizationCreated
+            .get()
+            .getOrganizationName()
+        );
+
+        List<DaysInTheWeek> organizationUuid = daysInWeekRepository.findDaysInTheWeekByFkOrganizationId(organizationClass)
+        .orElseThrow(() -> new InternalErrorException("Servidor indisponível ;("));
+
+        if(organizationUuid.isEmpty()){
             List<DaysInTheWeek> daysInWeekList;
 
             Optional<Organization> organizationOptional = organizationRepository.findById(organizationId);
@@ -38,12 +52,14 @@ public class DaysInWeekService {
             daysInWeekList = daysInWeek.stream().map(dayInWeek -> new DaysInTheWeek(dayInWeek, organization)).toList();
 
             for (DaysInTheWeek daysInTheWeek : daysInWeekList) {
-            daysInWeekRepository.save(daysInTheWeek);
+                daysInWeekRepository.save(daysInTheWeek);
             }
 
             List<DaysInWeekDTO> daysInWeekDTOs = daysInWeekList.stream().map(day -> new DaysInWeekDTO(day.getDaysInWeekId(), day.getDaysInTheWeekEnum(), organization.getOrganizationId())).toList();
         
             return daysInWeekDTOs;
+        } else {
+            throw new ResourceAlredyExistsException("Cronograma já criado!!!");
         }
     }
 

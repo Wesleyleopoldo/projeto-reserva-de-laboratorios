@@ -1,11 +1,13 @@
 package com.labssyntech.labsSyntech.controllers;
 
-import com.labssyntech.labsSyntech.dtos.OrganizationDTO;
-import com.labssyntech.labsSyntech.requestbodys.OrganizationRequestBody;
+import com.labssyntech.labsSyntech.dto.OrganizationDTO;
+import com.labssyntech.labsSyntech.requests.OrganizationRequestBody;
+import com.labssyntech.labsSyntech.requests.OrganizationRequestUuid;
 import com.labssyntech.labsSyntech.services.OrganizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,5 +39,10 @@ public class OrganizationController {
     public ResponseEntity<OrganizationDTO> createOrganization(@RequestBody OrganizationRequestBody newOrganizationData){
         OrganizationDTO newOrganization = organizationService.createOrganization(newOrganizationData.name());
         return ResponseEntity.ok(newOrganization);
+    }
+
+    @DeleteMapping("/destroyorganization")
+    public ResponseEntity<String> destroyOrganization(@RequestBody OrganizationRequestUuid organizationId) {
+        return ResponseEntity.ok(organizationService.destroyOrganizationService(organizationId.organizationId()));
     }
 }

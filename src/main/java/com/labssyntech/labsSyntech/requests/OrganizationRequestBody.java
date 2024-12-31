@@ -1,4 +1,6 @@
 package com.labssyntech.labsSyntech.requests;
 
-public record OrganizationRequestBody (String name){
+import java.util.UUID;
+
+public record OrganizationRequestBody (UUID organizationId, String name){
 }

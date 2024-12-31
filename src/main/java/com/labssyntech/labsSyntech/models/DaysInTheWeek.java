@@ -15,22 +15,22 @@ public class DaysInTheWeek {
     @Enumerated(EnumType.STRING)
     private DaysInTheWeekEnum daysInTheWeekEnum;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "fk_organization_id", referencedColumnName = "organization_id", nullable = true)
-    private Organization organization;
+    private Organization fkOrganizationId;
 
     public DaysInTheWeek() {
     }
 
     public DaysInTheWeek(DaysInTheWeekEnum daysInTheWeekEnum, Organization organization){
         this.daysInTheWeekEnum = daysInTheWeekEnum;
-        this.organization = organization;
+        this.fkOrganizationId = organization;
     }
 
     public DaysInTheWeek(Long daysInWeekId, DaysInTheWeekEnum daysInTheWeekEnum, Organization organization) {
         this.daysInWeekId = daysInWeekId;
         this.daysInTheWeekEnum = daysInTheWeekEnum;
-        this.organization = organization;
+        this.fkOrganizationId = organization;
     }
 
     public Long getDaysInWeekId() {
@@ -50,10 +50,10 @@ public class DaysInTheWeek {
     }
 
     public Organization getOrganization() {
-        return organization;
+        return fkOrganizationId;
     }
 
     public void setOrganization(Organization organization) {
-        this.organization = organization;
+        this.fkOrganizationId = organization;
     }
 }

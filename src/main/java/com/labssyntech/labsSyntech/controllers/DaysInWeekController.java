@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.labssyntech.labsSyntech.dtos.DaysInWeekDTO;
-import com.labssyntech.labsSyntech.dtos.DaysInWeekDTOSet;
-import com.labssyntech.labsSyntech.requestbodys.DaysInWeekRequestBody;
+import com.labssyntech.labsSyntech.dto.DaysInWeekDTO;
+import com.labssyntech.labsSyntech.dto.DaysInWeekDTOSet;
+import com.labssyntech.labsSyntech.requests.DaysInWeekRequestBody;
 import com.labssyntech.labsSyntech.services.DaysInWeekService;
 
 @Controller
@@ -25,14 +25,10 @@ public class DaysInWeekController {
     private DaysInWeekService daysInWeekService;
 
     @PostMapping("/register/{id}")
-    public ResponseEntity<?> createDaysInTheWeek(@PathVariable("id") UUID organizationId, @RequestBody DaysInWeekRequestBody data) {
+    public ResponseEntity<List<DaysInWeekDTO>> createDaysInTheWeek(@PathVariable("id") UUID organizationId, @RequestBody DaysInWeekRequestBody data) {
         
-        try {
-            List<DaysInWeekDTO> daysInWeekDTOs = daysInWeekService.createDaysInWeek(data.daysInTheWeekEnums(), organizationId);
-            return ResponseEntity.ok(daysInWeekDTOs);
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(409).body(e.getMessage());
-        }
+        List<DaysInWeekDTO> daysInWeekDTOs = daysInWeekService.createDaysInWeek(data.daysInTheWeekEnums(), organizationId);
+        return ResponseEntity.ok(daysInWeekDTOs);
             
     }
 
