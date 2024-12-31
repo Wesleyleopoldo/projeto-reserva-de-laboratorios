@@ -5,6 +5,12 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/*
+ * Entidade da tabela de reservas no banco de dados...
+ * Atributos...
+ * Getters e Setters...
+ */
+
 @Entity
 @Table(name = "reservation")
 public class Reservation {

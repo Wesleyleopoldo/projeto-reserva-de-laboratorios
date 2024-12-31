@@ -3,6 +3,12 @@ package com.labssyntech.labsSyntech.models;
 import com.labssyntech.labsSyntech.utils.DaysInTheWeekEnum;
 import jakarta.persistence.*;
 
+/*
+ * Entidade da tabela de Dias de Funcionamento no banco de dados...
+ * Atributos...
+ * Getters e Setters...
+ */
+
 @Entity
 @Table(name = "days_in_the_week")
 public class DaysInTheWeek {

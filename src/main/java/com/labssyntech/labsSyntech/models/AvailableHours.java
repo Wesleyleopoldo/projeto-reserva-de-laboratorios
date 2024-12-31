@@ -4,6 +4,12 @@ import jakarta.persistence.*;
 
 import java.time.LocalTime;
 
+/*
+ * Entidade da tabela de hórarios disponiveis no banco de dados...
+ * Atributos...
+ * Getters e Setters...
+ */
+
 @Entity
 @Table(name = "available_hours")
 public class AvailableHours {

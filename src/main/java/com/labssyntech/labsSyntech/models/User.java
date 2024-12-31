@@ -4,6 +4,12 @@ import jakarta.persistence.*;
 
 import java.util.UUID;
 
+/*
+ * Entidade da tabela de Usuários no banco de dados...
+ * Atributos...
+ * Getters e Setters...
+ */
+
 @Entity
 @Table(name = "user")
 public class User {
