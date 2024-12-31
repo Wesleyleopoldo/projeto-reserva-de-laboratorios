@@ -15,7 +15,7 @@ public class DaysInTheWeek {
     @Enumerated(EnumType.STRING)
     private DaysInTheWeekEnum daysInTheWeekEnum;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "fk_organization_id", referencedColumnName = "organization_id", nullable = true)
     private Organization fkOrganizationId;
 
