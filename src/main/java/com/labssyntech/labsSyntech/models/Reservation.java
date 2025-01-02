@@ -29,11 +29,11 @@ public class Reservation {
     private Organization organizationId;
 
     @ManyToOne
-    @JoinColumn(name = "fk_days_of_week", referencedColumnName = "days_in_the_week_id", nullable = false)
+    @JoinColumn(name = "fk_days_of_week_id", referencedColumnName = "days_in_the_week_id", nullable = false)
     private DaysInTheWeek daysOfWeek;
 
     @ManyToOne
-    @JoinColumn(name = "fk_avaulable_hours", referencedColumnName = "available_hours_id", nullable = false)
+    @JoinColumn(name = "fk_available_hours_id", referencedColumnName = "available_hours_id", nullable = false)
     private AvailableHours hoursId;
 
     @Column(name = "date_reservation", nullable = false)

@@ -1,0 +1,16 @@
+package com.labssyntech.labsSyntech.repository;
+
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.labssyntech.labsSyntech.models.User;
+
+public interface UserRepository extends JpaRepository<User, UUID>{
+
+    Optional<User> findByEmail(String userEmail);
+
+    Optional<User> findByUserName(String userName);
+    
+}
