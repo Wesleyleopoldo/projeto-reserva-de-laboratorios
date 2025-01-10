@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.labssyntech.labsSyntech.exception.InternalErrorException;
+import com.labssyntech.labsSyntech.exception.InvalidCredentialsException;
 import com.labssyntech.labsSyntech.exception.NotFoundException;
 import com.labssyntech.labsSyntech.exception.ResourceAlredyExistsException;
 
@@ -24,5 +25,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<String> handleNotFoundException(NotFoundException ex) {
         return ResponseEntity.status(404).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<String> handleInvalidCredentialsException(InvalidCredentialsException ex) {
+        return ResponseEntity.status(401).body(ex.getMessage());
     }
 }

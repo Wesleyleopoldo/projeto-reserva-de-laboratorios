@@ -65,9 +65,7 @@ public class DaysInWeekService {
 
     public List<DaysInWeekDTOSet> getAllInWeekServices() {
         List<DaysInTheWeek> daysInTheWeeksList = daysInWeekRepository.findAll();
-
         List<DaysInWeekDTOSet> daysInWeekDTOs = daysInTheWeeksList.stream().map(daysData -> new DaysInWeekDTOSet(daysData.getDaysInWeekId(), daysData.getDaysInTheWeekEnum(), daysData.getOrganization())).toList();
-
         return daysInWeekDTOs;
     }
 }

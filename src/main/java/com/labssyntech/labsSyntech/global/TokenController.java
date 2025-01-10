@@ -2,15 +2,16 @@ package com.labssyntech.labsSyntech.global;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.labssyntech.labsSyntech.dto.LoginDTO;
 import com.labssyntech.labsSyntech.requests.LoginRequest;
+import com.labssyntech.labsSyntech.requests.SignupRequest;
 import com.labssyntech.labsSyntech.services.UserServices;
 
-@RestController
+@Controller
 public class TokenController {
     
     @Autowired
@@ -22,5 +23,11 @@ public class TokenController {
         LoginDTO login = userServices.loginService(loginRequest);
 
         return ResponseEntity.ok(login);
+    }
+
+    @PostMapping("/signup")
+    public ResponseEntity<String> signup(@RequestBody SignupRequest signupRequest) {
+        String createUser = userServices.signupService(signupRequest);
+        return ResponseEntity.ok(createUser);
     }
 }

@@ -34,12 +34,6 @@ public class OrganizationController {
         return ResponseEntity.noContent().build();
 
     }
-    // Endpoint que cria organização...
-    @PostMapping("/registerorganization")
-    public ResponseEntity<OrganizationDTO> createOrganization(@RequestBody OrganizationRequestBody newOrganizationData){
-        OrganizationDTO newOrganization = organizationService.createOrganization(newOrganizationData.name());
-        return ResponseEntity.ok(newOrganization);
-    }
 
     @DeleteMapping("/destroyorganization")
     public ResponseEntity<String> destroyOrganization(@RequestBody OrganizationRequestUuid organizationId) {

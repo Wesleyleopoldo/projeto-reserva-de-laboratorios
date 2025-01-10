@@ -47,6 +47,21 @@ public class User {
         this.organization = organization;
     }
 
+    public User(String userName, String email, String password, boolean isPresident, Organization organization) {
+        this.userName = userName;
+        this.email = email;
+        this.password = password;
+        this.isPresident = isPresident;
+        this.organization = organization;
+    }
+
+    public User(String userName, String email, String password, boolean isPresident) {
+        this.userName = userName;
+        this.email = email;
+        this.password = password;
+        this.isPresident = isPresident;
+    }
+
     public UUID getUserId() {
         return userId;
     }
