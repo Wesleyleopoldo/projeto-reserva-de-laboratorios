@@ -5,40 +5,30 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.labssyntech.labsSyntech.dto.DaysInWeekDTO;
 import com.labssyntech.labsSyntech.dto.DaysInWeekDTOSet;
 import com.labssyntech.labsSyntech.exception.InternalErrorException;
-import com.labssyntech.labsSyntech.exception.NotFoundException;
 import com.labssyntech.labsSyntech.exception.ResourceAlredyExistsException;
 import com.labssyntech.labsSyntech.models.DaysInTheWeek;
 import com.labssyntech.labsSyntech.models.Organization;
 import com.labssyntech.labsSyntech.repository.DaysInWeekRepository;
-import com.labssyntech.labsSyntech.repository.OrganizationRepository;
 import com.labssyntech.labsSyntech.utils.DaysInTheWeekEnum;
+import com.labssyntech.labsSyntech.utils.UtilsDependences;
 
 @Service
 public class DaysInWeekService {
     
     @Autowired
     private DaysInWeekRepository daysInWeekRepository;
+
     @Autowired
-    private OrganizationRepository organizationRepository;
+    private UtilsDependences utilsDependences; // Serve para usar metodos estaticos que precisam de uma injeção de dependencia direta...
 
     public List<DaysInWeekDTO> createDaysInWeek(List<DaysInTheWeekEnum> daysInWeek, UUID organizationId) {
 
-        Optional<Organization> organizationCreated = organizationRepository.findById(organizationId);
-
-        Organization organizationClass = new Organization(
-            organizationCreated
-            .get()
-            .getOrganizationId(), 
-            organizationCreated
-            .get()
-            .getOrganizationName()
-        );
+        Organization organizationClass = utilsDependences.getOrganization(organizationId);
 
         List<DaysInTheWeek> organizationUuid = daysInWeekRepository.findDaysInTheWeekByFkOrganizationId(organizationClass)
         .orElseThrow(() -> new InternalErrorException("Servidor indisponível ;("));
@@ -46,8 +36,7 @@ public class DaysInWeekService {
         if(organizationUuid.isEmpty()){
             List<DaysInTheWeek> daysInWeekList;
 
-            Optional<Organization> organizationOptional = organizationRepository.findById(organizationId);
-            Organization organization = new Organization(organizationOptional.get().getOrganizationId(), organizationOptional.get().getOrganizationName());
+            Organization organization = utilsDependences.getOrganization(organizationId);
 
             daysInWeekList = daysInWeek.stream().map(dayInWeek -> new DaysInTheWeek(dayInWeek, organization)).toList();
 
@@ -63,9 +52,10 @@ public class DaysInWeekService {
         }
     }
 
-    public List<DaysInWeekDTOSet> getAllInWeekServices() {
-        List<DaysInTheWeek> daysInTheWeeksList = daysInWeekRepository.findAll();
-        List<DaysInWeekDTOSet> daysInWeekDTOs = daysInTheWeeksList.stream().map(daysData -> new DaysInWeekDTOSet(daysData.getDaysInWeekId(), daysData.getDaysInTheWeekEnum(), daysData.getOrganization())).toList();
+    public List<DaysInWeekDTOSet> getAllInWeekServices(UUID organizationId) {
+        Organization organization = utilsDependences.getOrganization(organizationId);
+        Optional<List<DaysInTheWeek>> daysInTheWeeksList = daysInWeekRepository.findDaysInTheWeekByFkOrganizationId(organization);
+        List<DaysInWeekDTOSet> daysInWeekDTOs = daysInTheWeeksList.get().stream().map(days -> new DaysInWeekDTOSet(days.getDaysInWeekId(), days.getDaysInTheWeekEnum(), organization)).toList();
         return daysInWeekDTOs;
     }
 }
