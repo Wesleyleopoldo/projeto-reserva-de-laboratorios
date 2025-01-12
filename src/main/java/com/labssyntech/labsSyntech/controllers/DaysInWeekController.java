@@ -26,17 +26,17 @@ public class DaysInWeekController {
 
     @PostMapping("/register/{id}")
     public ResponseEntity<List<DaysInWeekDTO>> createDaysInTheWeek(@PathVariable("id") UUID organizationId, @RequestBody DaysInWeekRequestBody data) {
-        
-        List<DaysInWeekDTO> daysInWeekDTOs = daysInWeekService.createDaysInWeek(data.daysInTheWeekEnums(), organizationId);
+        System.out.println("Executou até aqui...");
+        List<DaysInWeekDTO> daysInWeekDTOs = daysInWeekService.createDaysInWeek(data.daysInTheWeek(), organizationId);
         return ResponseEntity.ok(daysInWeekDTOs);
             
     }
 
     // Lista todas organizações...
-    @GetMapping("/days")
-    public ResponseEntity<List<DaysInWeekDTOSet>> getAllDaysInWeek() {
+    @GetMapping("/days/{id}")
+    public ResponseEntity<List<DaysInWeekDTOSet>> getAllDaysInWeek(@PathVariable("id") UUID organizationId) {
 
-        List<DaysInWeekDTOSet> daysInWeekDTOSets = daysInWeekService.getAllInWeekServices();
+        List<DaysInWeekDTOSet> daysInWeekDTOSets = daysInWeekService.getAllInWeekServices(organizationId);
 
         return ResponseEntity.ok(daysInWeekDTOSets);
     }

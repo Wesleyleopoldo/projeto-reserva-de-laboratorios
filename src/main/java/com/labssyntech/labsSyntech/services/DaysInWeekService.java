@@ -1,5 +1,6 @@
 package com.labssyntech.labsSyntech.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -14,7 +15,6 @@ import com.labssyntech.labsSyntech.exception.ResourceAlredyExistsException;
 import com.labssyntech.labsSyntech.models.DaysInTheWeek;
 import com.labssyntech.labsSyntech.models.Organization;
 import com.labssyntech.labsSyntech.repository.DaysInWeekRepository;
-import com.labssyntech.labsSyntech.utils.DaysInTheWeekEnum;
 import com.labssyntech.labsSyntech.utils.UtilsDependences;
 
 @Service
@@ -26,25 +26,26 @@ public class DaysInWeekService {
     @Autowired
     private UtilsDependences utilsDependences; // Serve para usar metodos estaticos que precisam de uma injeção de dependencia direta...
 
-    public List<DaysInWeekDTO> createDaysInWeek(List<DaysInTheWeekEnum> daysInWeek, UUID organizationId) {
-
+    public List<DaysInWeekDTO> createDaysInWeek(List<String> daysInWeek, UUID organizationId) {
+        
         Organization organizationClass = utilsDependences.getOrganization(organizationId);
 
-        List<DaysInTheWeek> organizationUuid = daysInWeekRepository.findDaysInTheWeekByFkOrganizationId(organizationClass)
+        // Verifica se a organização já criou um cronograma...
+        List<DaysInTheWeek> organizationCronogram = daysInWeekRepository.findDaysInTheWeekByFkOrganizationId(organizationClass)
         .orElseThrow(() -> new InternalErrorException("Servidor indisponível ;("));
 
-        if(organizationUuid.isEmpty()){
-            List<DaysInTheWeek> daysInWeekList;
+        if(organizationCronogram.isEmpty()){
+            List<DaysInTheWeek> daysInWeekList = new ArrayList<DaysInTheWeek>();
 
             Organization organization = utilsDependences.getOrganization(organizationId);
 
-            daysInWeekList = daysInWeek.stream().map(dayInWeek -> new DaysInTheWeek(dayInWeek, organization)).toList();
-
-            for (DaysInTheWeek daysInTheWeek : daysInWeekList) {
-                daysInWeekRepository.save(daysInTheWeek);
+            for (int index = 0; index < daysInWeek.size(); index ++) {
+                daysInWeekList.add(new DaysInTheWeek(daysInWeek.get(index), organizationClass));
             }
 
-            List<DaysInWeekDTO> daysInWeekDTOs = daysInWeekList.stream().map(day -> new DaysInWeekDTO(day.getDaysInWeekId(), day.getDaysInTheWeekEnum(), organization.getOrganizationId())).toList();
+            daysInWeekRepository.saveAll(daysInWeekList);
+
+            List<DaysInWeekDTO> daysInWeekDTOs = daysInWeekList.stream().map(day -> new DaysInWeekDTO(day.getDaysInWeekId(), day.getDayInTheWeek(), organization.getOrganizationId())).toList();
         
             return daysInWeekDTOs;
         } else {
@@ -55,7 +56,7 @@ public class DaysInWeekService {
     public List<DaysInWeekDTOSet> getAllInWeekServices(UUID organizationId) {
         Organization organization = utilsDependences.getOrganization(organizationId);
         Optional<List<DaysInTheWeek>> daysInTheWeeksList = daysInWeekRepository.findDaysInTheWeekByFkOrganizationId(organization);
-        List<DaysInWeekDTOSet> daysInWeekDTOs = daysInTheWeeksList.get().stream().map(days -> new DaysInWeekDTOSet(days.getDaysInWeekId(), days.getDaysInTheWeekEnum(), organization)).toList();
+        List<DaysInWeekDTOSet> daysInWeekDTOs = daysInTheWeeksList.get().stream().map(days -> new DaysInWeekDTOSet(days.getDaysInWeekId(), days.getDayInTheWeek(), organization)).toList();
         return daysInWeekDTOs;
     }
 }

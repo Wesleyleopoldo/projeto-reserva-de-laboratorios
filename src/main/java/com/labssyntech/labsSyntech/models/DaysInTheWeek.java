@@ -1,6 +1,5 @@
 package com.labssyntech.labsSyntech.models;
 
-import com.labssyntech.labsSyntech.utils.DaysInTheWeekEnum;
 import jakarta.persistence.*;
 
 /*
@@ -18,24 +17,24 @@ public class DaysInTheWeek {
     @Column(name = "days_in_the_week_id", nullable = false)
     private Long daysInWeekId;
 
-    @Enumerated(EnumType.STRING)
-    private DaysInTheWeekEnum daysInTheWeekEnum;
+    @Column(name = "days_in_the_week",nullable = false)
+    private String dayInTheWeek;
 
     @ManyToOne
-    @JoinColumn(name = "fk_organization_id", referencedColumnName = "organization_id", nullable = true)
+    @JoinColumn(name = "fk_organization_id", referencedColumnName = "organization_id", nullable = false)
     private Organization fkOrganizationId;
 
     public DaysInTheWeek() {
     }
 
-    public DaysInTheWeek(DaysInTheWeekEnum daysInTheWeekEnum, Organization organization){
-        this.daysInTheWeekEnum = daysInTheWeekEnum;
+    public DaysInTheWeek(String daysInTheWeekEnum, Organization organization){
+        this.dayInTheWeek = daysInTheWeekEnum;
         this.fkOrganizationId = organization;
     }
 
-    public DaysInTheWeek(Long daysInWeekId, DaysInTheWeekEnum daysInTheWeekEnum, Organization organization) {
+    public DaysInTheWeek(Long daysInWeekId, String daysInTheWeekEnum, Organization organization) {
         this.daysInWeekId = daysInWeekId;
-        this.daysInTheWeekEnum = daysInTheWeekEnum;
+        this.dayInTheWeek = daysInTheWeekEnum;
         this.fkOrganizationId = organization;
     }
 
@@ -47,12 +46,12 @@ public class DaysInTheWeek {
         this.daysInWeekId = daysInWeekId;
     }
 
-    public DaysInTheWeekEnum getDaysInTheWeekEnum() {
-        return daysInTheWeekEnum;
+    public String getDayInTheWeek() {
+        return dayInTheWeek;
     }
 
-    public void setDaysInTheWeekEnum(DaysInTheWeekEnum daysInTheWeekEnum) {
-        this.daysInTheWeekEnum = daysInTheWeekEnum;
+    public void setDayInTheWeek(String daysInTheWeekEnum) {
+        this.dayInTheWeek = daysInTheWeekEnum;
     }
 
     public Organization getOrganization() {
