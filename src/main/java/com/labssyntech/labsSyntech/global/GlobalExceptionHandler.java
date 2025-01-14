@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.labssyntech.labsSyntech.exception.AccessDeniedException;
 import com.labssyntech.labsSyntech.exception.InternalErrorException;
 import com.labssyntech.labsSyntech.exception.InvalidCredentialsException;
 import com.labssyntech.labsSyntech.exception.NotFoundException;
@@ -30,5 +31,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<String> handleInvalidCredentialsException(InvalidCredentialsException ex) {
         return ResponseEntity.status(401).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException ex){
+        return ResponseEntity.status(403).body(ex.getMessage());
     }
 }

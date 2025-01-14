@@ -38,11 +38,9 @@ public class OrganizationService {
         return listOrganizationDTO;
     }
 
-    public OrganizationDTO createOrganization(UUID userId, String name) {
+    public Organization createOrganization(String name) {
         
         Optional<Organization> newOrganizationOptional = organizationRepository.findByOrganizationName(name);
-
-        Optional<User> administerOrganization = userRepository.findById(userId);
 
         if(newOrganizationOptional.isPresent())
         {
@@ -50,26 +48,13 @@ public class OrganizationService {
         }
 
         Organization newOrganization = new Organization(name);
-        User administerUser = new User(
-            administerOrganization.get().getUserId(), 
-            administerOrganization.get().getUserName(), 
-            administerOrganization.get().getEmail(),
-            administerOrganization.get().getPassword(),
-            administerOrganization.get().isPresident(),
-            newOrganization
-        );
         organizationRepository.save(newOrganization);
-        userRepository.save(administerUser);
 
-        OrganizationDTO newOrganizationDTO = new OrganizationDTO(newOrganization.getOrganizationId(), newOrganization.getOrganizationName());
-
-        return newOrganizationDTO;
+        return newOrganization;
     }
 
     public String destroyOrganizationService(UUID organizationId) {
-        
         UUID organizationUuid = organizationId;
-
         Organization organization = organizationRepository
                                     .findById(organizationUuid)
                                     .orElseThrow(() -> new NotFoundException("Organização não encontrada!!!"));

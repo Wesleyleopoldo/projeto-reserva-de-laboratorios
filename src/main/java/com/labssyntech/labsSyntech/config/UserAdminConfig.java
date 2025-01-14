@@ -48,7 +48,7 @@ public class UserAdminConfig implements CommandLineRunner{
 
         userAdmin.ifPresentOrElse(
             user -> {
-                System.out.println("Usuário administrador já existe");
+                System.out.println("Usuário administrador já existe UUID:" + user.getUserId());
             },
             () -> {
                 User user = new User();

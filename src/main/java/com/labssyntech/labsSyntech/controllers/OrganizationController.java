@@ -1,19 +1,23 @@
 package com.labssyntech.labsSyntech.controllers;
 
 import com.labssyntech.labsSyntech.dto.OrganizationDTO;
-import com.labssyntech.labsSyntech.requests.OrganizationRequestBody;
 import com.labssyntech.labsSyntech.requests.OrganizationRequestUuid;
 import com.labssyntech.labsSyntech.services.OrganizationService;
+import com.labssyntech.labsSyntech.utils.UtilsDependences;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/organization")
@@ -22,21 +26,20 @@ public class OrganizationController {
     @Autowired
     private OrganizationService organizationService;
 
+    @Autowired
+    private UtilsDependences utilsDependences;
     // Endpoint que lista as organizações...
-    @GetMapping("/administerW")
-    public ResponseEntity<List<OrganizationDTO>> getAllOrganizations(){
-
+    @GetMapping("/administerW/{userId}")
+    @PreAuthorize("@utilsDependences.validationUser(#userId)")
+    public ResponseEntity<List<OrganizationDTO>> getAllOrganizations(@PathVariable UUID userId){
         List<OrganizationDTO> organizations = organizationService.getAllOrganizationService();
-
-        if(!organizations.isEmpty()) {
-            return ResponseEntity.ok(organizations);
-        }
-        return ResponseEntity.noContent().build();
-
+        return ResponseEntity.ok(organizations);
     }
 
-    @DeleteMapping("/destroyorganization")
-    public ResponseEntity<String> destroyOrganization(@RequestBody OrganizationRequestUuid organizationId) {
+    // Endpoint que deleta a organização...
+    @DeleteMapping("/{userId}")
+    @PreAuthorize("@utilsDependences.isAdmin(#userId)")
+    public ResponseEntity<String> destroyOrganization(@PathVariable UUID userId, @RequestBody OrganizationRequestUuid organizationId) {
         return ResponseEntity.ok(organizationService.destroyOrganizationService(organizationId.organizationId()));
     }
 }

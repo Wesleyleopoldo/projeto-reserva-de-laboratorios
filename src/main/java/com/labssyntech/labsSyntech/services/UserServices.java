@@ -1,6 +1,7 @@
 package com.labssyntech.labsSyntech.services;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +11,12 @@ import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.labssyntech.labsSyntech.dto.LoginDTO;
+import com.labssyntech.labsSyntech.dto.UserDTO;
 import com.labssyntech.labsSyntech.exception.InvalidCredentialsException;
+import com.labssyntech.labsSyntech.exception.NotFoundException;
 import com.labssyntech.labsSyntech.exception.ResourceAlredyExistsException;
 import com.labssyntech.labsSyntech.models.Organization;
 import com.labssyntech.labsSyntech.models.User;
@@ -48,7 +52,7 @@ public class UserServices {
         }
 
         Instant now = Instant.now();
-        Long expiresAt = 500L;
+        Long expiresAt = 800L;
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
                     .issuer("LabSyntechServer")
@@ -65,6 +69,7 @@ public class UserServices {
         return loginDTO;
     }
 
+    @Transactional
     public String signupService(SignupRequest signupRequest) {
         
         Optional<User> findUser = userRepository.findByEmail(signupRequest.email());
@@ -79,6 +84,10 @@ public class UserServices {
             throw new ResourceAlredyExistsException("Usuário já cadastrado ou Empresa não existe");
         }
 
+        if(signupRequest.isPresident() == true) {
+            organization = organizationService.createOrganization(signupRequest.organizationName());
+        }
+
         User newUser = new User(
                 signupRequest.userName(),
                 signupRequest.email(),
@@ -87,14 +96,30 @@ public class UserServices {
                 organization
             );
 
-        if(signupRequest.isPresident() == true) {
-
-            userRepository.save(newUser);
-            organizationService.createOrganization(newUser.getUserId(), signupRequest.organizationName());
-
-        }
+        userRepository.save(newUser);
 
         return "Sucesso!!!";
+    }
+
+    public List<UserDTO> getAllUsersServices() {
+        List<User> usersListOptional = userRepository.findAll();
+
+        if(usersListOptional.isEmpty()) {
+            throw new NotFoundException("Não há usuários cadastrados...");
+        }
+
+        List<UserDTO> userDTOList = usersListOptional.stream().map(
+            user -> new UserDTO(
+                user.getUserId(),
+                user.getUserName(),
+                user.getEmail(),
+                user.getPassword(), 
+                user.isPresident(), 
+                user.getOrganization()
+            )
+        ).toList();
+
+        return userDTOList;
     }
 
     private boolean isLoginCorrect(LoginRequest loginRequest, String password, PasswordEncoder passwordEncoder) {

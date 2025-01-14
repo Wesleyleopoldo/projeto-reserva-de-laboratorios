@@ -18,6 +18,10 @@ public class ConfigService {
     public String getUserName() {
         return dotenv.get("USER_NAME");
     }
+
+    public String getUserId() {
+        return dotenv.get("USER_ID");
+    }
     
     public String getUserEmail() {
         return dotenv.get("USER_EMAIL");
@@ -31,4 +35,7 @@ public class ConfigService {
         return dotenv.get("ORGANIZATION_ID");
     }
 
+    public String getOrganizationName() {
+        return dotenv.get("ORGANIZATION_NAME");
+    }
 }

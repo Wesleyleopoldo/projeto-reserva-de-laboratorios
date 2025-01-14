@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.labssyntech.labsSyntech.dto.LoginDTO;
 import com.labssyntech.labsSyntech.requests.LoginRequest;
-import com.labssyntech.labsSyntech.requests.SignupRequest;
 import com.labssyntech.labsSyntech.services.UserServices;
 
 @Controller
@@ -23,11 +22,5 @@ public class TokenController {
         LoginDTO login = userServices.loginService(loginRequest);
 
         return ResponseEntity.ok(login);
-    }
-
-    @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody SignupRequest signupRequest) {
-        String createUser = userServices.signupService(signupRequest);
-        return ResponseEntity.ok(createUser);
     }
 }
