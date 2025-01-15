@@ -5,9 +5,7 @@ import com.labssyntech.labsSyntech.exception.InternalErrorException;
 import com.labssyntech.labsSyntech.exception.NotFoundException;
 import com.labssyntech.labsSyntech.exception.ResourceAlredyExistsException;
 import com.labssyntech.labsSyntech.models.Organization;
-import com.labssyntech.labsSyntech.models.User;
 import com.labssyntech.labsSyntech.repository.OrganizationRepository;
-import com.labssyntech.labsSyntech.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,9 +20,6 @@ public class OrganizationService {
 
     @Autowired
     private OrganizationRepository organizationRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     public List<OrganizationDTO> getAllOrganizationService()
     {

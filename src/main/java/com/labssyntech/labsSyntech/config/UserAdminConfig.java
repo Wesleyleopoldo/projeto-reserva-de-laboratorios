@@ -1,7 +1,6 @@
 package com.labssyntech.labsSyntech.config;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -13,6 +12,7 @@ import com.labssyntech.labsSyntech.models.Organization;
 import com.labssyntech.labsSyntech.models.User;
 import com.labssyntech.labsSyntech.repository.OrganizationRepository;
 import com.labssyntech.labsSyntech.repository.UserRepository;
+import com.labssyntech.labsSyntech.utils.UtilTools;
 
 @Configuration
 public class UserAdminConfig implements CommandLineRunner{
@@ -33,33 +33,39 @@ public class UserAdminConfig implements CommandLineRunner{
     @Transactional
     public void run(String... args) throws Exception {
 
+        String organizationName = configService.getOrganizationName();
+        Optional<Organization> findOrganization = organizationRepository.findByOrganizationName(organizationName);
+        Organization myOrganization;
         String userName = configService.getUserName();
-        String organizationId = configService.getId();
         String userEmail = configService.getUserEmail();
-        String userPassword = configService.getPassword();
-        
-        Optional<User> userAdmin = userRepository.findByUserName(userName);
+        String password = configService.getPassword();
 
-        UUID myOrganizationUuid = UUID.fromString(organizationId);
+        if(findOrganization.isEmpty()){
+            myOrganization = new Organization(organizationName);
+            organizationRepository.save(myOrganization);
+            System.out.println("Organização Criada com Sucesso!!!");
+        } else {
+            System.out.println("Organização já criada UUID:" + findOrganization.get().getOrganizationId());
+            myOrganization = findOrganization.get();
+        }
 
-        Optional<Organization> findMyOrganization = organizationRepository.findById(myOrganizationUuid);
+        Optional<User> findUser = userRepository.findByEmail(userEmail);
 
-        Organization myOrganization = new Organization(myOrganizationUuid, findMyOrganization.get().getOrganizationName());
+        if(findUser.isEmpty()){
+            User newUser = new User(
+                userName,
+                userEmail,
+                bCryptPasswordEncoder.encode(password),
+             true,
+                myOrganization
+            );
+            userRepository.save(newUser);
+            System.out.println("Usuário criado com sucesso UUID: " + newUser.getUserId());
+            UtilTools.updateEnviroments(newUser.getUserId().toString(), myOrganization.getOrganizationId().toString());
+        } else {
+            System.out.println("Usuário já existe!!! UUID: " + configService.getUserId());
+        }
 
-        userAdmin.ifPresentOrElse(
-            user -> {
-                System.out.println("Usuário administrador já existe UUID:" + user.getUserId());
-            },
-            () -> {
-                User user = new User();
-                user.setUserName(userName);
-                user.setEmail(userEmail);
-                user.setPassword(bCryptPasswordEncoder.encode(userPassword));
-                user.setPresident(true);
-                user.setOrganization(myOrganization);
 
-                userRepository.save(user);
-            }
-        );
     }
 }
