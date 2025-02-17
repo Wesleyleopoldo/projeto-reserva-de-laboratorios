@@ -1,6 +1,7 @@
 package com.labssyntech.labsSyntech.controllers;
 
 import com.labssyntech.labsSyntech.dto.OrganizationDTO;
+import com.labssyntech.labsSyntech.requests.OrganizationRequestBody;
 import com.labssyntech.labsSyntech.requests.OrganizationRequestUuid;
 import com.labssyntech.labsSyntech.services.OrganizationService;
 import com.labssyntech.labsSyntech.utils.UtilsDependences;
@@ -41,5 +42,10 @@ public class OrganizationController {
     @PreAuthorize("@utilsDependences.isAdmin(#userId)")
     public ResponseEntity<String> destroyOrganization(@PathVariable UUID userId, @RequestBody OrganizationRequestUuid organizationId) {
         return ResponseEntity.ok(organizationService.destroyOrganizationService(organizationId.organizationId()));
+    }
+
+    @PostMapping("/signup")
+    public ResponseEntity<OrganizationDTO> createUser(@RequestBody OrganizationRequestBody organizationRequestBody) {
+        return ResponseEntity.ok(organizationService.createOrganization(organizationRequestBody.name()));
     }
 }

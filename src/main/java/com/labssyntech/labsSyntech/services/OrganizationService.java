@@ -33,7 +33,7 @@ public class OrganizationService {
         return listOrganizationDTO;
     }
 
-    public Organization createOrganization(String name) {
+    public OrganizationDTO createOrganization(String name) {
         
         Optional<Organization> newOrganizationOptional = organizationRepository.findByOrganizationName(name);
 
@@ -45,7 +45,9 @@ public class OrganizationService {
         Organization newOrganization = new Organization(name);
         organizationRepository.save(newOrganization);
 
-        return newOrganization;
+        OrganizationDTO organizationDTO = new OrganizationDTO(newOrganization.getOrganizationId(), newOrganization.getOrganizationName());
+
+        return organizationDTO;
     }
 
     public String destroyOrganizationService(UUID organizationId) {

@@ -20,7 +20,7 @@ import com.labssyntech.labsSyntech.exception.NotFoundException;
 import com.labssyntech.labsSyntech.exception.ResourceAlredyExistsException;
 import com.labssyntech.labsSyntech.models.Organization;
 import com.labssyntech.labsSyntech.models.User;
-import com.labssyntech.labsSyntech.repository.OrganizationRepository;
+// import com.labssyntech.labsSyntech.repository.OrganizationRepository;
 import com.labssyntech.labsSyntech.repository.UserRepository;
 import com.labssyntech.labsSyntech.requests.LoginRequest;
 import com.labssyntech.labsSyntech.requests.SignupRequest;
@@ -34,14 +34,14 @@ public class UserServices {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private OrganizationRepository organizationRepository;
+    // @Autowired
+    // private OrganizationRepository organizationRepository;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @Autowired
-    private OrganizationService organizationService;
+    // @Autowired
+    // private OrganizationService organizationService;
     
     public LoginDTO loginService(LoginRequest loginRequest) {
 
@@ -70,22 +70,13 @@ public class UserServices {
     }
 
     @Transactional
-    public String signupService(SignupRequest signupRequest) {
+    public String signupUserService(SignupRequest signupRequest) {
         
         Optional<User> findUser = userRepository.findByEmail(signupRequest.email());
         Organization organization = null;
 
-        if(signupRequest.organizationId() != null){
-            Optional<Organization> findOrganization = organizationRepository.findById(signupRequest.organizationId());
-            organization = new Organization(findOrganization.get().getOrganizationId(), findOrganization.get().getOrganizationName());
-        }
-
         if(findUser.isPresent()) {
-            throw new ResourceAlredyExistsException("Usuário já cadastrado ou Empresa não existe");
-        }
-
-        if(signupRequest.isPresident() == true) {
-            organization = organizationService.createOrganization(signupRequest.organizationName());
+            throw new ResourceAlredyExistsException("Usuário já cadastrado");
         }
 
         User newUser = new User(
@@ -121,6 +112,8 @@ public class UserServices {
 
         return userDTOList;
     }
+
+
 
     private boolean isLoginCorrect(LoginRequest loginRequest, String password, PasswordEncoder passwordEncoder) {
         return passwordEncoder.matches(loginRequest.password(), password);

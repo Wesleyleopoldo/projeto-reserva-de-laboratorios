@@ -24,9 +24,9 @@ public class UserController {
     @Autowired
     private UserServices userServices;
 
-    @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody SignupRequest signupRequest) {
-        String createUser = userServices.signupService(signupRequest);
+    @PostMapping("/signupUser")
+    public ResponseEntity<String> signupUser(@RequestBody SignupRequest signupRequest) {
+        String createUser = userServices.signupUserService(signupRequest);
         return ResponseEntity.ok(createUser);
     }
 
