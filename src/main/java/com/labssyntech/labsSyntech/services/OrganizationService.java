@@ -21,6 +21,9 @@ public class OrganizationService {
     @Autowired
     private OrganizationRepository organizationRepository;
 
+    @Autowired
+    private UserServices userServices;
+
     public List<OrganizationDTO> getAllOrganizationService()
     {
         List<Organization> listOrganizations = organizationRepository.findAll();
@@ -33,7 +36,7 @@ public class OrganizationService {
         return listOrganizationDTO;
     }
 
-    public OrganizationDTO createOrganization(String name) {
+    public OrganizationDTO createOrganization(UUID userId, String name) {
         
         Optional<Organization> newOrganizationOptional = organizationRepository.findByOrganizationName(name);
 
@@ -44,6 +47,8 @@ public class OrganizationService {
 
         Organization newOrganization = new Organization(name);
         organizationRepository.save(newOrganization);
+
+        userServices.updateUser(userId, newOrganization);
 
         OrganizationDTO organizationDTO = new OrganizationDTO(newOrganization.getOrganizationId(), newOrganization.getOrganizationName());
 

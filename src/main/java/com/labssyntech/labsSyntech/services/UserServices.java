@@ -3,6 +3,7 @@ package com.labssyntech.labsSyntech.services;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -113,7 +114,26 @@ public class UserServices {
         return userDTOList;
     }
 
+    public UserDTO updateUser(UUID userId, Organization organization) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if(userOptional.isEmpty()) {
+            throw new NotFoundException("Usuário não encontrado...");
+        }
+        User user = userOptional.get();
+        user.setOrganization(organization);
+        userRepository.save(user);
 
+        UserDTO userDTO = new UserDTO(
+            user.getUserId(), 
+            user.getUserName(), 
+            user.getEmail(), 
+            user.getPassword(), 
+            user.isPresident(), 
+            user.getOrganization()
+        );
+
+        return userDTO;
+    }
 
     private boolean isLoginCorrect(LoginRequest loginRequest, String password, PasswordEncoder passwordEncoder) {
         return passwordEncoder.matches(loginRequest.password(), password);

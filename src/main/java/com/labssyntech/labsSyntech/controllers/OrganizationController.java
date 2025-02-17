@@ -44,8 +44,8 @@ public class OrganizationController {
         return ResponseEntity.ok(organizationService.destroyOrganizationService(organizationId.organizationId()));
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<OrganizationDTO> createUser(@RequestBody OrganizationRequestBody organizationRequestBody) {
-        return ResponseEntity.ok(organizationService.createOrganization(organizationRequestBody.name()));
+    @PostMapping("/{userId}/registerorganization")
+    public ResponseEntity<OrganizationDTO> createUser(@PathVariable UUID userId, @RequestBody OrganizationRequestBody organizationRequestBody) {
+        return ResponseEntity.ok(organizationService.createOrganization(userId, organizationRequestBody.name()));
     }
 }
