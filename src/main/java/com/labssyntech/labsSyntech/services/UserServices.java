@@ -101,20 +101,13 @@ public class UserServices {
         }
 
         List<UserDTO> userDTOList = usersListOptional.stream().map(
-            user -> new UserDTO(
-                user.getUserId(),
-                user.getUserName(),
-                user.getEmail(),
-                user.getPassword(), 
-                user.isPresident(), 
-                user.getOrganization()
-            )
+            user -> createDTO(user)
         ).toList();
 
         return userDTOList;
     }
 
-    public UserDTO updateUser(UUID userId, Organization organization) {
+    public UserDTO updateUserOrganization(UUID userId, Organization organization) {
         Optional<User> userOptional = userRepository.findById(userId);
         if(userOptional.isEmpty()) {
             throw new NotFoundException("Usuário não encontrado...");
@@ -123,7 +116,33 @@ public class UserServices {
         user.setOrganization(organization);
         userRepository.save(user);
 
-        UserDTO userDTO = new UserDTO(
+        UserDTO userDTO = createDTO(user);
+
+        return userDTO;
+    }
+
+    public UserDTO updateIsAdmin(UUID userId, boolean isAdmin) {
+        Optional<User> userOptional = userRepository.findById(userId);
+
+        if(userOptional.isEmpty()) {
+            throw new NotFoundException("Usuário não encontrado...");
+        }
+
+        User user = userOptional.get();
+        user.setPresident(isAdmin);
+        userRepository.save(user);
+
+        UserDTO userDTO = createDTO(user);
+
+        return userDTO;
+    }
+
+    private boolean isLoginCorrect(LoginRequest loginRequest, String password, PasswordEncoder passwordEncoder) {
+        return passwordEncoder.matches(loginRequest.password(), password);
+    }
+
+    private UserDTO createDTO(User user) {
+        return new UserDTO(
             user.getUserId(), 
             user.getUserName(), 
             user.getEmail(), 
@@ -131,11 +150,5 @@ public class UserServices {
             user.isPresident(), 
             user.getOrganization()
         );
-
-        return userDTO;
-    }
-
-    private boolean isLoginCorrect(LoginRequest loginRequest, String password, PasswordEncoder passwordEncoder) {
-        return passwordEncoder.matches(loginRequest.password(), password);
     }
 }

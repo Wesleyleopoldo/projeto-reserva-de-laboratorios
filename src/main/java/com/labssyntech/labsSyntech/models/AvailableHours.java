@@ -23,7 +23,13 @@ public class AvailableHours {
     private LocalTime hours;
 
     @ManyToOne
-    @JoinColumn(name = "fk_days_in_the_week", referencedColumnName = "days_in_the_week_id", nullable = false)
+    @JoinColumn(name = "fk_organization_id", referencedColumnName = "organization_id", nullable = false)
+    private Organization organization;
+
+    
+
+    @ManyToOne
+    @JoinColumn(name = "fk_days_in_the_week_id", referencedColumnName = "days_in_the_week_id", nullable = false)
     private DaysInTheWeek daysInTheWeek;
 
     public AvailableHours() {
@@ -50,12 +56,20 @@ public class AvailableHours {
     public void setHours(LocalTime hours) {
         this.hours = hours;
     }
-
+    
     public Long getAvailableHours() {
         return availableHours;
     }
 
     public void setAvailableHours(Long availableHours) {
         this.availableHours = availableHours;
+    }
+    
+    public Organization getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(Organization organization) {
+        this.organization = organization;
     }
 }

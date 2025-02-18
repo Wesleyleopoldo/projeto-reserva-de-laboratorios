@@ -48,7 +48,7 @@ public class OrganizationService {
         Organization newOrganization = new Organization(name);
         organizationRepository.save(newOrganization);
 
-        userServices.updateUser(userId, newOrganization);
+        userServices.updateUserOrganization(userId, newOrganization);
 
         OrganizationDTO organizationDTO = new OrganizationDTO(newOrganization.getOrganizationId(), newOrganization.getOrganizationName());
 
