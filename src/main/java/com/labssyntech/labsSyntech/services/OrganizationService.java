@@ -50,6 +50,8 @@ public class OrganizationService {
 
         userServices.updateUserOrganization(userId, newOrganization);
 
+        userServices.updateIsAdmin(userId, true);
+
         OrganizationDTO organizationDTO = new OrganizationDTO(newOrganization.getOrganizationId(), newOrganization.getOrganizationName());
 
         return organizationDTO;

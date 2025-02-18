@@ -66,6 +66,5 @@ public class UserAdminConfig implements CommandLineRunner{
             System.out.println("Usuário já existe!!! UUID: " + configService.getUserId());
         }
 
-
     }
 }

@@ -21,7 +21,7 @@ public class UtilsUser {
         boolean isAdmin = isAdmin(configService, userId);
         
         if(!isAdmin) {
-            throw new AccessDeniedException("Você não tem privilegios de administrador para executar essa ação...");
+            throw new AccessDeniedException("Você não tem privilegios de administrador para executar essa ação..." + isAdmin);
         }
 
         return isAdmin;
