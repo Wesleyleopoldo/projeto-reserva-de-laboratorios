@@ -33,4 +33,8 @@ public class UtilsDependences {
     public boolean isAdmin(UUID userId) {
         return UtilsUser.isPresidentOrAdmin(configService, userRepository, userId);
     }
+
+    public boolean isAdminSyntech(UUID userId) {
+        return UtilsUser.isAdmin(configService, userId);
+    }
 }
