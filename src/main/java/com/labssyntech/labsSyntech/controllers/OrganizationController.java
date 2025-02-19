@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -31,7 +32,7 @@ public class OrganizationController {
     private UtilsDependences utilsDependences;
     // Endpoint que lista as organizações...
     @GetMapping("/administerW/{userId}")
-    @PreAuthorize("@utilsDependences.validationUser(#userId)")
+    @PreAuthorize("@utilsDependences.isAdminSyntech(#userId)")
     public ResponseEntity<List<OrganizationDTO>> getAllOrganizations(@PathVariable UUID userId){
         List<OrganizationDTO> organizations = organizationService.getAllOrganizationService();
         return ResponseEntity.ok(organizations);
@@ -45,7 +46,19 @@ public class OrganizationController {
     }
 
     @PostMapping("/{userId}/registerorganization")
-    public ResponseEntity<OrganizationDTO> createUser(@PathVariable UUID userId, @RequestBody OrganizationRequestBody organizationRequestBody) {
+    public ResponseEntity<OrganizationDTO> createOrganization(@PathVariable UUID userId, @RequestBody OrganizationRequestBody organizationRequestBody) {
         return ResponseEntity.ok(organizationService.createOrganization(userId, organizationRequestBody.name()));
+    }
+
+    @GetMapping("/getorganization/{userId}")
+    @PreAuthorize("@utilsDependences.isAdmin(#userId)")
+    public ResponseEntity<OrganizationDTO> getOrganization(@PathVariable UUID userId, @RequestBody OrganizationRequestUuid organizationId) {
+        return ResponseEntity.ok(organizationService.getOrganizationForUUID(organizationId.organizationId()));
+    }
+
+    @PutMapping("/updatename/{userId}")
+    @PreAuthorize("@utilsDependences.isAdmin(#userId)")
+    public ResponseEntity<OrganizationDTO> updateOrganizationName(@PathVariable UUID userId, @RequestBody OrganizationRequestBody organizationRequestBody){
+        return ResponseEntity.ok(organizationService.updateOrganizationName(organizationRequestBody.organizationId(), organizationRequestBody.name()));
     }
 }
