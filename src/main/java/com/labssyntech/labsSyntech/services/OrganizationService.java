@@ -36,6 +36,12 @@ public class OrganizationService {
         return listOrganizationDTO;
     }
 
+    public OrganizationDTO getOrganizationForUUID(UUID organizationId) {
+        Organization organization = findOrganization(organizationId, "Nenhuma organização encontrada...");
+        OrganizationDTO organizationDTO = new OrganizationDTO(organization);
+        return organizationDTO;
+    }
+
     public OrganizationDTO createOrganization(UUID userId, String name) {
         
         Optional<Organization> newOrganizationOptional = organizationRepository.findByOrganizationName(name);
@@ -69,5 +75,28 @@ public class OrganizationService {
         } catch (Exception exception) {
             throw new InternalErrorException("Serviço indisponível temporariamente");
         }
+    }
+
+    public OrganizationDTO updateOrganizationName(UUID organizationId, String newOrganizationName) {
+        Organization organization = findOrganization(organizationId, "Não foi encontrada nenhuma organização com esse nome...");
+
+        organization.setOrganizationName(newOrganizationName);
+        organizationRepository.save(organization);
+
+        OrganizationDTO organizationDTO = new OrganizationDTO(organization);
+
+        return organizationDTO;
+    }
+
+    private Organization findOrganization(UUID organizationId, String exceptionMessege) {
+        Optional<Organization> organizationOptional = organizationRepository.findById(organizationId);
+
+        if(organizationOptional.isEmpty()) {
+            throw new NotFoundException(exceptionMessege);
+        }
+
+        Organization organization = organizationOptional.get();
+
+        return organization;
     }
 }
