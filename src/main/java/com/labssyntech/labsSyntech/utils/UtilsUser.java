@@ -36,11 +36,13 @@ public class UtilsUser {
 
         boolean isAdmin = isAdmin(configService, userId);
 
-        if(!isAdmin && !user.get().isPresident()) {
+        if(!isAdmin && user.get().isPresident() == false) {
             throw new AccessDeniedException("Você não tem privilégios de administrador para executar essa ação!!!");
         }
 
-        return isAdmin;
+        boolean access = isAdmin || user.get().isPresident() ? true : false;
+
+        return access;
     }
 
     static boolean isAdmin(ConfigService configService, UUID userId) {
