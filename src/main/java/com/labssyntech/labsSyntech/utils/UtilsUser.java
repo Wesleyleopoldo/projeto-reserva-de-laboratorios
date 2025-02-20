@@ -16,16 +16,16 @@ public class UtilsUser {
     }
         
 
-    static boolean validationUser(ConfigService configService, UUID userId) {
+    // static boolean validationUser(ConfigService configService, UUID userId) {
 
-        boolean isAdmin = isAdmin(configService, userId);
+    //     boolean isAdmin = isAdmin(configService, userId);
         
-        if(!isAdmin) {
-            throw new AccessDeniedException("Você não tem privilegios de administrador para executar essa ação..." + isAdmin);
-        }
+    //     if(!isAdmin) {
+    //         throw new AccessDeniedException("Você não tem privilegios de administrador para executar essa ação..." + isAdmin);
+    //     }
 
-        return isAdmin;
-    }
+    //     return isAdmin;
+    // }
 
     static boolean isPresidentOrAdmin(ConfigService configService, UserRepository userRepository, UUID userId) {
         Optional<User> user = userRepository.findById(userId);
@@ -36,7 +36,7 @@ public class UtilsUser {
 
         boolean isAdmin = isAdmin(configService, userId);
 
-        if(!isAdmin && user.get().isPresident() == false) {
+        if(!isAdmin && !user.get().isPresident()) {
             throw new AccessDeniedException("Você não tem privilégios de administrador para executar essa ação!!!");
         }
 

@@ -40,7 +40,7 @@ public class OrganizationController {
 
     // Endpoint que deleta a organização...
     @DeleteMapping("/{userId}")
-    @PreAuthorize("@utilsDependences.isAdmin(#userId)")
+    @PreAuthorize("@utilsDependences.isPresidentAdmin(#userId)")
     public ResponseEntity<String> destroyOrganization(@PathVariable UUID userId, @RequestBody OrganizationRequestUuid organizationId) {
         return ResponseEntity.ok(organizationService.destroyOrganizationService(organizationId.organizationId()));
     }
@@ -51,13 +51,13 @@ public class OrganizationController {
     }
 
     @GetMapping("/getorganization/{userId}")
-    @PreAuthorize("@utilsDependences.isAdmin(#userId)")
+    @PreAuthorize("@utilsDependences.isPresidentOrAdmin(#userId)")
     public ResponseEntity<OrganizationDTO> getOrganization(@PathVariable UUID userId, @RequestBody OrganizationRequestUuid organizationId) {
         return ResponseEntity.ok(organizationService.getOrganizationForUUID(organizationId.organizationId()));
     }
 
     @PutMapping("/updatename/{userId}")
-    @PreAuthorize("@utilsDependences.isAdmin(#userId)")
+    @PreAuthorize("@utilsDependences.isPresidentOrAdmin(#userId)")
     public ResponseEntity<OrganizationDTO> updateOrganizationName(@PathVariable UUID userId, @RequestBody OrganizationRequestBody organizationRequestBody){
         return ResponseEntity.ok(organizationService.updateOrganizationName(organizationRequestBody.organizationId(), organizationRequestBody.name()));
     }

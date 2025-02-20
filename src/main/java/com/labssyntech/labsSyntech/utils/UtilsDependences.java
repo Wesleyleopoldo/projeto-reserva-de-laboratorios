@@ -26,11 +26,11 @@ public class UtilsDependences {
         return UtilsOrganization.newOrganization(organizationRepository, organizationId);
     }
 
-    public boolean validationUser(UUID userId) {
-        return UtilsUser.validationUser(configService, userId);
-    }
+    // public boolean validationUser(UUID userId) {
+    //     return UtilsUser.validationUser(configService, userId);
+    // }
 
-    public boolean isAdmin(UUID userId) {
+    public boolean isPresidentOrAdmin(UUID userId) {
         return UtilsUser.isPresidentOrAdmin(configService, userRepository, userId);
     }
 
