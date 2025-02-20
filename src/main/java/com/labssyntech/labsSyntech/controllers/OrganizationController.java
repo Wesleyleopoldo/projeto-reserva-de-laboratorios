@@ -40,7 +40,7 @@ public class OrganizationController {
 
     // Endpoint que deleta a organização...
     @DeleteMapping("/{userId}")
-    @PreAuthorize("@utilsDependences.isPresidentAdmin(#userId)")
+    @PreAuthorize("@utilsDependences.isPresidentOrAdmin(#userId)")
     public ResponseEntity<String> destroyOrganization(@PathVariable UUID userId, @RequestBody OrganizationRequestUuid organizationId) {
         return ResponseEntity.ok(organizationService.destroyOrganizationService(organizationId.organizationId()));
     }
