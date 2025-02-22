@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -21,12 +20,14 @@ import com.labssyntech.labsSyntech.exception.InternalErrorException;
 import com.labssyntech.labsSyntech.exception.InvalidCredentialsException;
 import com.labssyntech.labsSyntech.exception.NotFoundException;
 import com.labssyntech.labsSyntech.exception.ResourceAlredyExistsException;
+import com.labssyntech.labsSyntech.helper.HelperOrganization;
 import com.labssyntech.labsSyntech.models.Organization;
 import com.labssyntech.labsSyntech.models.User;
 // import com.labssyntech.labsSyntech.repository.OrganizationRepository;
 import com.labssyntech.labsSyntech.repository.UserRepository;
 import com.labssyntech.labsSyntech.requests.LoginRequest;
-import com.labssyntech.labsSyntech.requests.SignupRequest;
+import com.labssyntech.labsSyntech.requests.PresidentSignupRequest;
+import com.labssyntech.labsSyntech.requests.UserSignupRequest;
 
 @Service
 public class UserServices {
@@ -44,8 +45,7 @@ public class UserServices {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    @Lazy
-    private OrganizationService organizationService;
+    private HelperOrganization helperOrganization;
     
     public LoginDTO loginService(LoginRequest loginRequest) {
 
@@ -74,15 +74,10 @@ public class UserServices {
     }
 
     @Transactional
-    public String signupUserService(SignupRequest signupRequest) {
+    public UserDTO signupPresidentService(PresidentSignupRequest signupRequest) {
         
         Optional<User> findUser = userRepository.findByEmail(signupRequest.email());
-        UUID organizationId = signupRequest.organizationId();
         Organization organization = null;
-
-        if(!signupRequest.organizationId().toString().isEmpty()){
-            organization = organizationService.findOrganization(organizationId, "Organização fornecida não existe");
-        }
 
         if(findUser.isPresent()) {
             throw new ResourceAlredyExistsException("Usuário já cadastrado");
@@ -98,7 +93,34 @@ public class UserServices {
 
         userRepository.save(newUser);
 
-        return "Sucesso!!!";
+        UserDTO userDTO = new UserDTO(newUser.getUserId(), signupRequest.password(), newUser.getEmail(), newUser.getPassword(), newUser.isPresident(), newUser.getOrganization());
+
+        return userDTO;
+    }
+
+    public UserDTO signupUserService(UserSignupRequest signupRequest, UUID organizationId) {
+        Optional<User> findUser = userRepository.findByEmail(signupRequest.email());
+        Organization organization = null;
+
+        if(findUser.isPresent()) {
+            throw new ResourceAlredyExistsException("Usuário já cadastrado");
+        }
+
+        organization = helperOrganization.findOrganizationById(organizationId, "Organização fornecida não existe");
+
+        User newUser = new User(
+            signupRequest.userName(),
+            signupRequest.email(),
+            bCryptPasswordEncoder.encode(signupRequest.password()),
+            signupRequest.isPresident(),
+            organization
+        );
+
+        userRepository.save(newUser);
+
+        UserDTO userDTO = new UserDTO(newUser.getUserId(), signupRequest.password(), newUser.getEmail(), newUser.getPassword(), newUser.isPresident(), newUser.getOrganization());
+
+        return userDTO;
     }
 
     public List<UserDTO> getAllUsersServices() {
