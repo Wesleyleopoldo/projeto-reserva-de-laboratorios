@@ -4,6 +4,8 @@ import com.labssyntech.labsSyntech.dto.OrganizationDTO;
 import com.labssyntech.labsSyntech.exception.InternalErrorException;
 import com.labssyntech.labsSyntech.exception.NotFoundException;
 import com.labssyntech.labsSyntech.exception.ResourceAlredyExistsException;
+import com.labssyntech.labsSyntech.helper.HelperOrganization;
+import com.labssyntech.labsSyntech.helper.HelperUser;
 import com.labssyntech.labsSyntech.models.Organization;
 import com.labssyntech.labsSyntech.repository.OrganizationRepository;
 
@@ -22,7 +24,10 @@ public class OrganizationService {
     private OrganizationRepository organizationRepository;
 
     @Autowired
-    private UserServices userServices;
+    private HelperUser helperUser;
+
+    @Autowired
+    private HelperOrganization helperOrganization;
 
     public List<OrganizationDTO> getAllOrganizationService()
     {
@@ -37,7 +42,7 @@ public class OrganizationService {
     }
 
     public OrganizationDTO getOrganizationForUUID(UUID organizationId) {
-        Organization organization = findOrganization(organizationId, "Nenhuma organização encontrada...");
+        Organization organization = helperOrganization.findOrganizationById(organizationId, "Nenhuma organização encontrada...");
         OrganizationDTO organizationDTO = new OrganizationDTO(organization);
         return organizationDTO;
     }
@@ -54,9 +59,9 @@ public class OrganizationService {
         Organization newOrganization = new Organization(name);
         organizationRepository.save(newOrganization);
 
-        userServices.updateUserOrganization(userId, newOrganization);
+        helperUser.setOrganization(userId, newOrganization);
 
-        userServices.updateIsAdmin(userId, true);
+        helperUser.setIsPresident(userId, true);
 
         OrganizationDTO organizationDTO = new OrganizationDTO(newOrganization.getOrganizationId(), newOrganization.getOrganizationName());
 
@@ -78,7 +83,7 @@ public class OrganizationService {
     }
 
     public OrganizationDTO updateOrganizationName(UUID organizationId, String newOrganizationName) {
-        Organization organization = findOrganization(organizationId, "Não foi encontrada nenhuma organização com esse nome...");
+        Organization organization = helperOrganization.findOrganizationById(organizationId, "Não foi encontrada nenhuma organização com esse nome...");
 
         organization.setOrganizationName(newOrganizationName);
         organizationRepository.save(organization);
@@ -86,17 +91,5 @@ public class OrganizationService {
         OrganizationDTO organizationDTO = new OrganizationDTO(organization);
 
         return organizationDTO;
-    }
-
-    Organization findOrganization(UUID organizationId, String exceptionMessege) {
-        Optional<Organization> organizationOptional = organizationRepository.findById(organizationId);
-
-        if(organizationOptional.isEmpty()) {
-            throw new NotFoundException(exceptionMessege);
-        }
-
-        Organization organization = organizationOptional.get();
-
-        return organization;
     }
 }
