@@ -28,8 +28,9 @@ public class OrganizationController {
     @Autowired
     private OrganizationService organizationService;
 
-    @Autowired
-    private UtilsDependences utilsDependences;
+    // @Autowired
+    // private UtilsDependences utilsDependences;
+
     // Endpoint que lista as organizações...
     @GetMapping("/administerW/{userId}")
     @PreAuthorize("@utilsDependences.isAdminSyntech(#userId)")
