@@ -4,7 +4,6 @@ import com.labssyntech.labsSyntech.dto.OrganizationDTO;
 import com.labssyntech.labsSyntech.requests.OrganizationRequestBody;
 import com.labssyntech.labsSyntech.requests.OrganizationRequestUuid;
 import com.labssyntech.labsSyntech.services.OrganizationService;
-import com.labssyntech.labsSyntech.utils.UtilsDependences;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,9 +26,6 @@ public class OrganizationController {
 
     @Autowired
     private OrganizationService organizationService;
-
-    // @Autowired
-    // private UtilsDependences utilsDependences;
 
     // Endpoint que lista as organizações...
     @GetMapping("/administerW/{userId}")
