@@ -15,8 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.labssyntech.labsSyntech.dto.UserDTO;
-import com.labssyntech.labsSyntech.requests.SignupRequest;
+import com.labssyntech.labsSyntech.requests.PresidentSignupRequest;
 import com.labssyntech.labsSyntech.requests.UserRequestUuid;
+import com.labssyntech.labsSyntech.requests.UserSignupRequest;
 import com.labssyntech.labsSyntech.services.UserServices;
 
 @Controller
@@ -26,21 +27,26 @@ public class UserController {
     @Autowired
     private UserServices userServices;
 
-    @PostMapping("/signupUser")
-    public ResponseEntity<String> signupUser(@RequestBody SignupRequest signupRequest) {
-        String createUser = userServices.signupUserService(signupRequest);
-        return ResponseEntity.ok(createUser);
+    @PostMapping("/signupPresident")
+    public ResponseEntity<UserDTO> signupPresident(@RequestBody PresidentSignupRequest signupRequest) {
+        return ResponseEntity.ok(userServices.signupPresidentService(signupRequest));
+    }
+
+    @PostMapping("/signupUser/{adminId}/{organizationId}")
+    @PreAuthorize("@helperUser.isPresidentOrAdmin(#adminId, #organizationId)")
+    public ResponseEntity<UserDTO> signupUser(@RequestBody UserSignupRequest signupRequest, @PathVariable UUID adminId,@PathVariable UUID organizationId) {
+        return ResponseEntity.ok(userServices.signupUserService(signupRequest, organizationId));
     }
 
     @GetMapping("/administerW/{userId}")
-    @PreAuthorize("@utilsDependences.isAdminSyntech(#userId)")
+    @PreAuthorize("@helperUser.isAdminSyntech(#userId)")
     public ResponseEntity<List<UserDTO>> getAllUsers(@PathVariable UUID userId) {
         return ResponseEntity.ok(userServices.getAllUsersServices());
     }
 
-    @DeleteMapping("/destroyuser/{adminId}")
-    @PreAuthorize("@utilsDependences.isPresidentOrAdmin(#adminId)")
-    public ResponseEntity<UserDTO> destroyUserById(@PathVariable UUID adminId, @RequestBody UserRequestUuid userRequest) {
+    @DeleteMapping("/destroyuser/{adminId}/{organizationId}")
+    @PreAuthorize("@helperUser.isPresidentOrAdmin(#adminId, #organizationId)")
+    public ResponseEntity<UserDTO> destroyUserById(@PathVariable UUID adminId, @PathVariable UUID organizationId, @RequestBody UserRequestUuid userRequest) {
         return ResponseEntity.ok(userServices.destroyUser(userRequest.userId()));
     }
 }
