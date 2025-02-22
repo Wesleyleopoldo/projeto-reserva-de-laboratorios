@@ -2,7 +2,6 @@ package com.labssyntech.labsSyntech.controllers;
 
 import com.labssyntech.labsSyntech.dto.OrganizationDTO;
 import com.labssyntech.labsSyntech.requests.OrganizationRequestBody;
-import com.labssyntech.labsSyntech.requests.OrganizationRequestUuid;
 import com.labssyntech.labsSyntech.services.OrganizationService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,17 +28,17 @@ public class OrganizationController {
 
     // Endpoint que lista as organizações...
     @GetMapping("/administerW/{userId}")
-    @PreAuthorize("@utilsDependences.isAdminSyntech(#userId)")
+    @PreAuthorize("@helperUser.isAdminSyntech(#userId)")
     public ResponseEntity<List<OrganizationDTO>> getAllOrganizations(@PathVariable UUID userId){
         List<OrganizationDTO> organizations = organizationService.getAllOrganizationService();
         return ResponseEntity.ok(organizations);
     }
 
     // Endpoint que deleta a organização...
-    @DeleteMapping("/{userId}")
-    @PreAuthorize("@utilsDependences.isPresidentOrAdmin(#userId)")
-    public ResponseEntity<String> destroyOrganization(@PathVariable UUID userId, @RequestBody OrganizationRequestUuid organizationId) {
-        return ResponseEntity.ok(organizationService.destroyOrganizationService(organizationId.organizationId()));
+    @DeleteMapping("/{userId}/{organizationId}")
+    @PreAuthorize("@helperUser.isPresidentOrAdmin(#userId, #organizationId)")
+    public ResponseEntity<String> destroyOrganization(@PathVariable UUID userId, @PathVariable UUID organizationId) {
+        return ResponseEntity.ok(organizationService.destroyOrganizationService(organizationId));
     }
 
     @PostMapping("/{userId}/registerorganization")
@@ -47,15 +46,15 @@ public class OrganizationController {
         return ResponseEntity.ok(organizationService.createOrganization(userId, organizationRequestBody.name()));
     }
 
-    @GetMapping("/getorganization/{userId}")
-    @PreAuthorize("@utilsDependences.isPresidentOrAdmin(#userId)")
-    public ResponseEntity<OrganizationDTO> getOrganization(@PathVariable UUID userId, @RequestBody OrganizationRequestUuid organizationId) {
-        return ResponseEntity.ok(organizationService.getOrganizationForUUID(organizationId.organizationId()));
+    @GetMapping("/getorganization/{userId}/{organizationId}")
+    @PreAuthorize("@helperUser.isPresidentOrAdmin(#userId, #organizationId)")
+    public ResponseEntity<OrganizationDTO> getOrganization(@PathVariable UUID userId,@PathVariable UUID organizationId) {
+        return ResponseEntity.ok(organizationService.getOrganizationForUUID(organizationId));
     }
 
-    @PutMapping("/updatename/{userId}")
-    @PreAuthorize("@utilsDependences.isPresidentOrAdmin(#userId)")
-    public ResponseEntity<OrganizationDTO> updateOrganizationName(@PathVariable UUID userId, @RequestBody OrganizationRequestBody organizationRequestBody){
-        return ResponseEntity.ok(organizationService.updateOrganizationName(organizationRequestBody.organizationId(), organizationRequestBody.name()));
+    @PutMapping("/updatename/{userId}/{organizationId}")
+    @PreAuthorize("@helperUser.isPresidentOrAdmin(#userId, #organizationId)")
+    public ResponseEntity<OrganizationDTO> updateOrganizationName(@PathVariable UUID userId,@PathVariable UUID organizationId, @RequestBody OrganizationRequestBody organizationRequestBody){
+        return ResponseEntity.ok(organizationService.updateOrganizationName(organizationId, organizationRequestBody.name()));
     }
 }
