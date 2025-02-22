@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.labssyntech.labsSyntech.dto.LoginDTO;
 import com.labssyntech.labsSyntech.dto.UserDTO;
+import com.labssyntech.labsSyntech.exception.InternalErrorException;
 import com.labssyntech.labsSyntech.exception.InvalidCredentialsException;
 import com.labssyntech.labsSyntech.exception.NotFoundException;
 import com.labssyntech.labsSyntech.exception.ResourceAlredyExistsException;
@@ -41,8 +43,9 @@ public class UserServices {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    // @Autowired
-    // private OrganizationService organizationService;
+    @Autowired
+    @Lazy
+    private OrganizationService organizationService;
     
     public LoginDTO loginService(LoginRequest loginRequest) {
 
@@ -74,7 +77,12 @@ public class UserServices {
     public String signupUserService(SignupRequest signupRequest) {
         
         Optional<User> findUser = userRepository.findByEmail(signupRequest.email());
+        UUID organizationId = signupRequest.organizationId();
         Organization organization = null;
+
+        if(!signupRequest.organizationId().toString().isEmpty()){
+            organization = organizationService.findOrganization(organizationId, "Organização fornecida não existe");
+        }
 
         if(findUser.isPresent()) {
             throw new ResourceAlredyExistsException("Usuário já cadastrado");
@@ -135,6 +143,24 @@ public class UserServices {
         UserDTO userDTO = createDTO(user);
 
         return userDTO;
+    }
+
+    public UserDTO destroyUser(UUID userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        
+        if(userOptional.isEmpty()) {
+            throw new NotFoundException("ID errado ou usuário não existe...");
+        }
+
+        User user = userOptional.get();
+        UserDTO userDTO = createDTO(user);
+
+        try {
+            userRepository.delete(user);
+            return userDTO;
+        } catch (Exception e) {
+            throw new InternalErrorException("Serviço indisponível temporariamente...");
+        }
     }
 
     private boolean isLoginCorrect(LoginRequest loginRequest, String password, PasswordEncoder passwordEncoder) {

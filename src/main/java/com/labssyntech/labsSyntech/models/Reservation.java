@@ -29,6 +29,10 @@ public class Reservation {
     private Organization organizationId;
 
     @ManyToOne
+    @JoinColumn(name = "fk_room_id", referencedColumnName = "room_id", nullable = false)
+    private Room roomId;
+
+    @ManyToOne
     @JoinColumn(name = "fk_days_of_week_id", referencedColumnName = "days_in_the_week_id", nullable = false)
     private DaysInTheWeek daysOfWeek;
 
@@ -73,6 +77,14 @@ public class Reservation {
 
     public void setOrganizationId(Organization organizationId) {
         this.organizationId = organizationId;
+    }
+
+    public Room getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Room roomId) {
+        this.roomId = roomId;
     }
 
     public DaysInTheWeek getDaysOfWeek() {

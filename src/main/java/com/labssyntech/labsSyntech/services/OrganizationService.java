@@ -88,7 +88,7 @@ public class OrganizationService {
         return organizationDTO;
     }
 
-    private Organization findOrganization(UUID organizationId, String exceptionMessege) {
+    Organization findOrganization(UUID organizationId, String exceptionMessege) {
         Optional<Organization> organizationOptional = organizationRepository.findById(organizationId);
 
         if(organizationOptional.isEmpty()) {
