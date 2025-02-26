@@ -32,13 +32,9 @@ public class Reservation {
     @JoinColumn(name = "fk_room_id", referencedColumnName = "room_id", nullable = false)
     private Room roomId;
 
-    @ManyToOne
-    @JoinColumn(name = "fk_days_of_week_id", referencedColumnName = "days_in_the_week_id", nullable = false)
-    private DaysInTheWeek daysOfWeek;
-
-    @ManyToOne
-    @JoinColumn(name = "fk_available_hours_id", referencedColumnName = "available_hours_id", nullable = false)
-    private AvailableHours hoursId;
+    @OneToOne
+    @JoinColumn(name = "fk_availability_id", referencedColumnName = "availability_id", nullable = false)
+    private Availability availabilityId;
 
     @Column(name = "date_reservation", nullable = false)
     private LocalDateTime dateTheReservation;
@@ -46,12 +42,10 @@ public class Reservation {
     public Reservation() {
     }
 
-    public Reservation(UUID reservationId, User userId, Organization organizationId, DaysInTheWeek daysOfWeek, AvailableHours hoursId, LocalDateTime dateTheReservation) {
+    public Reservation(UUID reservationId, User userId, Organization organizationId, LocalDateTime dateTheReservation) {
         this.reservationId = reservationId;
         this.userId = userId;
         this.organizationId = organizationId;
-        this.daysOfWeek = daysOfWeek;
-        this.hoursId = hoursId;
         this.dateTheReservation = dateTheReservation;
     }
 
@@ -87,20 +81,12 @@ public class Reservation {
         this.roomId = roomId;
     }
 
-    public DaysInTheWeek getDaysOfWeek() {
-        return daysOfWeek;
+    public Availability getAvailabilityId() {
+        return availabilityId;
     }
 
-    public void setDaysOfWeek(DaysInTheWeek daysOfWeek) {
-        this.daysOfWeek = daysOfWeek;
-    }
-
-    public AvailableHours getHoursId() {
-        return hoursId;
-    }
-
-    public void setHoursId(AvailableHours hoursId) {
-        this.hoursId = hoursId;
+    public void setAvailabilityId(Availability availabilityId) {
+        this.availabilityId = availabilityId;
     }
 
     public LocalDateTime getDateTheReservation() {
