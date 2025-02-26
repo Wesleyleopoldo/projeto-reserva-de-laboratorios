@@ -93,7 +93,7 @@ public class UserServices {
 
         userRepository.save(newUser);
 
-        UserDTO userDTO = new UserDTO(newUser.getUserId(), signupRequest.password(), newUser.getEmail(), newUser.getPassword(), newUser.isPresident(), newUser.getOrganization());
+        UserDTO userDTO = createDTO(newUser);
 
         return userDTO;
     }
@@ -118,7 +118,7 @@ public class UserServices {
 
         userRepository.save(newUser);
 
-        UserDTO userDTO = new UserDTO(newUser.getUserId(), signupRequest.password(), newUser.getEmail(), newUser.getPassword(), newUser.isPresident(), newUser.getOrganization());
+        UserDTO userDTO = createDTO(newUser);
 
         return userDTO;
     }
@@ -137,11 +137,14 @@ public class UserServices {
         return userDTOList;
     }
 
-    public UserDTO updateUserOrganization(UUID userId, Organization organization) {
+    public UserDTO updateUserOrganization(UUID userId, UUID organizationId) {
         Optional<User> userOptional = userRepository.findById(userId);
+        Organization organization = helperOrganization.findOrganizationById(organizationId, "Organização não encontrada na base de dados...");
+        
         if(userOptional.isEmpty()) {
             throw new NotFoundException("Usuário não encontrado...");
         }
+        
         User user = userOptional.get();
         user.setOrganization(organization);
         userRepository.save(user);
@@ -160,6 +163,51 @@ public class UserServices {
 
         User user = userOptional.get();
         user.setPresident(isAdmin);
+        userRepository.save(user);
+
+        UserDTO userDTO = createDTO(user);
+
+        return userDTO;
+    }
+
+    public UserDTO updateUserEmail(String userEmail, String newUserEmail) {
+        Optional<User> userOptional = userRepository.findByEmail(userEmail);
+        if(userOptional.isEmpty()) {
+            throw new NotFoundException("Usuário não encontrado!!!");
+        }
+
+        User user = userOptional.get();
+        user.setEmail(newUserEmail);
+        userRepository.save(user);
+
+        UserDTO userDTO = createDTO(user);
+
+        return userDTO;
+    }
+
+    public UserDTO updateUserName(String userEmail, String newUserName) {
+        Optional<User> userOptional = userRepository.findByEmail(userEmail);
+        if(userOptional.isEmpty()) {
+            throw new NotFoundException("Usuário não encontrado");
+        }
+
+        User user = userOptional.get();
+        user.setUserName(newUserName);
+        userRepository.save(user);
+
+        UserDTO userDTO = createDTO(user);
+
+        return userDTO;
+    }
+
+    public UserDTO updatePassword(String userEmail, String newPassword) {
+        Optional<User> userOptional = userRepository.findByEmail(userEmail);
+        if(userOptional.isEmpty()) {
+            throw new NotFoundException("Usuário não encontrado");
+        }
+
+        User user = userOptional.get();
+        user.setUserName(bCryptPasswordEncoder.encode(newPassword));
         userRepository.save(user);
 
         UserDTO userDTO = createDTO(user);
@@ -193,10 +241,8 @@ public class UserServices {
         return new UserDTO(
             user.getUserId(), 
             user.getUserName(), 
-            user.getEmail(), 
-            user.getPassword(), 
-            user.isPresident(), 
-            user.getOrganization()
+            user.getEmail(),
+            user.isPresident()
         );
     }
 }
