@@ -30,18 +30,13 @@ public class AvailableHours {
     @JoinColumn(name = "fk_days_in_the_week_id", referencedColumnName = "days_in_the_week_id", nullable = false)
     private DaysInTheWeek daysInTheWeek;
 
-    @ManyToMany(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "fk_room_id", referencedColumnName = "room_id", nullable = false)
-    private Room roomId;
-
     public AvailableHours() {
     }
 
-    public AvailableHours(Long availableHours, LocalTime hours, DaysInTheWeek daysInTheWeek, Room roomId) {
+    public AvailableHours(Long availableHours, LocalTime hours, DaysInTheWeek daysInTheWeek) {
         this.availableHoursId = availableHours;
         this.hours = hours;
         this.daysInTheWeek = daysInTheWeek;
-        this.roomId = roomId;
     }
 
     public DaysInTheWeek getDaysInTheWeek() {
@@ -74,14 +69,6 @@ public class AvailableHours {
 
     public void setOrganization(Organization organization) {
         this.organization = organization;
-    }
-
-    public Room getRoomId() {
-        return roomId;
-    }
-
-    public void setRoomId(Room roomId) {
-        this.roomId = roomId;
     }
     
 }
