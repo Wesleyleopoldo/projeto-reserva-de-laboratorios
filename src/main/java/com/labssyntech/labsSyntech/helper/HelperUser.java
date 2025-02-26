@@ -81,4 +81,27 @@ public class HelperUser {
         boolean access = adminId.equals(userIdString) ? true : false;
         return access;
     }
+
+    public boolean verifyUserAndOrganization(UUID userId, UUID organizationId, String userEmail) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        Optional<User> userByEmailOptional = userRepository.findByEmail(userEmail);
+
+        if(userOptional.isEmpty() && userByEmailOptional.isEmpty()) {
+            throw new NotFoundException("Usuário não encontrado ou não existe...");
+        }
+
+        boolean isAdmin = isSuperUser(userId);
+
+        User user = userOptional.get();
+        User userByEmail = userByEmailOptional.get();
+        if(!isAdmin && !user.isPresident() && !user.getUserId().equals(userByEmail.getUserId())){
+            throw new AccessDeniedException("Você não tem privilégios de administrador para executar essa ação!!!");
+        } else if(!isAdmin && !user.getOrganization().getOrganizationId().equals(organizationId)) {
+            throw new AccessDeniedException("Permissão negada: você não pertence a essa empresa...");
+        }
+
+        boolean access = isAdmin || user.isPresident() || user.getUserId().equals(userByEmail.getUserId()) ? true : false;
+
+        return access;
+    }
 }
