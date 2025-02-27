@@ -24,15 +24,12 @@ public class DaysInWeekController {
     @Autowired
     private DaysInWeekService daysInWeekService;
 
-    @PostMapping("/register/{id}")
-    public ResponseEntity<List<DaysInWeekDTO>> createDaysInTheWeek(@PathVariable("id") UUID organizationId, @RequestBody DaysInWeekRequestBody data) {
-        System.out.println("Executou até aqui...");
-        List<DaysInWeekDTO> daysInWeekDTOs = daysInWeekService.createDaysInWeek(data.daysInTheWeek(), organizationId);
-        return ResponseEntity.ok(daysInWeekDTOs);
-            
+    @PostMapping("/register/{organizationId}")
+    public ResponseEntity<List<DaysInWeekDTO>> createDaysInTheWeek(@PathVariable UUID organizationId, @RequestBody DaysInWeekRequestBody data) {
+        return ResponseEntity.ok(daysInWeekService.createDaysInWeek(data.daysInTheWeek(), organizationId));
     }
 
-    // Lista todas organizações...
+    // Lista todos dias na semana...
     @GetMapping("/days/{id}")
     public ResponseEntity<List<DaysInWeekDTOSet>> getAllDaysInWeek(@PathVariable("id") UUID organizationId) {
 
