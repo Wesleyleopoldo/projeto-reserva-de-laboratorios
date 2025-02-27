@@ -14,6 +14,6 @@ import com.labssyntech.labsSyntech.models.Organization;
 public interface DaysInWeekRepository extends JpaRepository<DaysInTheWeek, Long>{
 
     // Método que cria uma consulta personalizada para buscar Dias na semana com UUID da organização através do Jpa...
-    Optional<List<DaysInTheWeek>> findDaysInTheWeekByFkOrganizationId(Organization organization);
+    List<DaysInTheWeek> findDaysInTheWeekByFkOrganizationId(Organization organization);
 
 }
