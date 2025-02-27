@@ -32,9 +32,7 @@ public class DaysInWeekController {
     // Lista todos dias na semana...
     @GetMapping("/days/{id}")
     public ResponseEntity<List<DaysInWeekDTOSet>> getAllDaysInWeek(@PathVariable("id") UUID organizationId) {
-
         List<DaysInWeekDTOSet> daysInWeekDTOSets = daysInWeekService.getAllInWeekServices(organizationId);
-
         return ResponseEntity.ok(daysInWeekDTOSets);
     }
 }
