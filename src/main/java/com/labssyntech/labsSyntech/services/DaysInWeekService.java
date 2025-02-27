@@ -75,7 +75,7 @@ public class DaysInWeekService {
         // Procura os dias da semana pelo ID e adiciona à lista
         for (Long id : dayInWeekId) {
             Optional<DaysInTheWeek> daysInTheWeekOptional = daysInWeekRepository.findById(id);
-            if(daysInTheWeekOptional.isPresent()) {
+            if(daysInTheWeekOptional.isPresent() && daysInTheWeekOptional.get().getOrganization().equals(organization)) {
                 daysInTheWeekList.add(daysInTheWeekOptional.get());
             }
         }
