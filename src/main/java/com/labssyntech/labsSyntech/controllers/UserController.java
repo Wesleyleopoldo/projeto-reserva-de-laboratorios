@@ -85,7 +85,7 @@ public class UserController {
     }
 
     // Endpoint para atualizar a organização do usuário
-    @PutMapping("/updateispresident/{userId}/{organizationId}")
+    @PutMapping("/updateorganization/{userId}/{organizationId}")
     @PreAuthorize("@helperUser.isPresidentOrAdmin(#userId, #organizationId)")
     public ResponseEntity<UserDTO> updateUserOrganization(@PathVariable UUID userId, @PathVariable UUID organizationId, @RequestBody UserRequestBody userRequest) {
         return ResponseEntity.ok(userServices.updateUserOrganization(userRequest.userId(), userRequest.organizationId()));
