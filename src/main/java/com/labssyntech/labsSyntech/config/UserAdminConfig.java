@@ -61,6 +61,7 @@ public class UserAdminConfig implements CommandLineRunner{
             );
             userRepository.save(newUser);
             System.out.println("Usuário criado com sucesso UUID: " + newUser.getUserId());
+
             UtilTools.updateEnviroments(newUser.getUserId().toString(), myOrganization.getOrganizationId().toString());
         } else {
             System.out.println("Usuário já existe!!! UUID: " + configService.getUserId());
