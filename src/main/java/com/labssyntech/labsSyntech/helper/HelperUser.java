@@ -30,6 +30,8 @@ public class HelperUser {
             throw new AccessDeniedException("Você não tem privilegios de administrador para executar essa ação..." + isAdmin);
         }
 
+        System.out.println(isAdmin);
+
         return isAdmin;
     }
 
@@ -75,10 +77,12 @@ public class HelperUser {
         userRepository.save(user);
     }
 
+    // No metodo do configService vemos o padrão Fluent Interface ou Encadeamento de Métodos...
     public boolean isSuperUser(UUID userId) {
         String userIdString = userId.toString();
-        String adminId = configService.getUserId();
+        String adminId = configService.dotenvLoad().getUserId(); // Id do usuário administrador
         boolean access = adminId.equals(userIdString) ? true : false;
+        System.out.println(access);
         return access;
     }
 
