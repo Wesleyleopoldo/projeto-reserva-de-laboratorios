@@ -14,6 +14,11 @@ public class ConfigService {
     public ConfigService(Dotenv dotenv) {
         this.dotenv = dotenv;
     }
+    // Padrão Fluent Interface ou method chaining...
+    public ConfigService dotenvLoad() {
+        this.dotenv = Dotenv.load();
+        return this;
+    }
 
     public String getUserName() {
         return dotenv.get("USER_NAME");
